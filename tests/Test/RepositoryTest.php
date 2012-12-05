@@ -100,4 +100,11 @@ class RepositoryTest extends UnitAbstract
             $this->assert(false, 'Method "ContentRepository->findById()" was called more than once so the cache did not find the item.');
         }
     }
+
+    public function repositoryInit()
+    {
+        $argument = 'test';
+        MyTestRepository::init($argument);
+        $this->assert(MyTestRepository::$argument == $argument, 'The argument was not initialised');
+    }
 }

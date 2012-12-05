@@ -1,6 +1,7 @@
 <?php
 
 namespace Model\Repository;
+use ReflectionClass;
 
 /**
  * Allows a repository to behave like a singleton.
