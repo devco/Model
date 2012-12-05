@@ -60,8 +60,9 @@ class Date extends VoAbstract
     {
         if (is_numeric($value)) {
             $value = date($this->config['format'], $value);
+            $this->modify($value);
         } elseif ($value) {
-            $this->date->modify($value);
+            $this->modify($value);
         } else {
             $this->date = null;
         }
@@ -75,6 +76,22 @@ class Date extends VoAbstract
     public function get()
     {
         return $this->date ? $this->date->format($this->config['format']) : null;
+    }
+
+    private function modify($value)
+    {
+        if ($this->date instanceof DateTime)
+        {
+            $this->date->modify($value);
+        }
+        else
+        {
+            if ($this->config['timezone']) {
+                $this->date = new DateTime($value, new DateTimeZone($this->config['timezone']));
+            } else {
+                $this->date = new DateTime($value);
+            }
+        }
     }
     
     /**
