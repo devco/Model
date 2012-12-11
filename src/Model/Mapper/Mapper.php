@@ -240,6 +240,11 @@ class Mapper implements MapperInterface
      */
     private function getMappedValue($map, array $from = array())
     {
+        // if this value is set just accept it straight away
+        if (isset($from[$map])) {
+            return $from[$map];
+        }
+
         // only get the first dot part and the rest still intact
         // this way we can tell if we are at the end
         $parts = explode('.', $map, 2);
