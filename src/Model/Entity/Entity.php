@@ -241,15 +241,14 @@ class Entity implements AccessibleInterface, AssertableInterface
 
     public function from($data, $filterToUse = null)
     {
-        $data = $this->makeArrayFromAnything($data);
-
         foreach ($this->getImportFilters()->offsetGet($filterToUse) as $filter) {
             $data = $filter($data);
         }
 
+        $data = $this->makeArrayFromAnything($data);
+
         // @deprected and can be removed once the mapper functionality is removed.
         if ($filterToUse && isset($this->mappers[$filterToUse])) {
-            $data = $this->makeArrayFromAnything($data);
             $data = $this->mappers[$filterToUse]->map($data);
         }
 

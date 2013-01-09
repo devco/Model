@@ -6,6 +6,8 @@ use Model\Entity\Set;
 use Model\Validator\ValidatorException;
 use Provider\CommentEntity;
 use Provider\ContentEntity;
+use Provider\MongoEntity;
+use Provider\PasswordEntity;
 use Provider\UserEntity;
 use Testes\Test\UnitAbstract;
 
@@ -50,6 +52,29 @@ class EntityTest extends UnitAbstract
         $mapped  = $content->toArray('testMapper');
 
         $this->assert(array_key_exists('testName', $mapped), 'The mapper was not invoked.');
+    }
+
+    public function filtering()
+    {
+        $content = new MongoEntity([
+            '_id' => 1
+        ]);
+        
+        $this->assert($content->_id === '1', 'The mongo _id was never set');
+
+        $data = $content->to('mongoId');
+
+        $this->assert(!isset($data['_id']), 'The mongo _id is still set');
+
+        $content = new PasswordEntity([
+            'password' => 'pa55word'
+        ]);
+
+        $this->assert($content->password === 'pa55word', 'The password was never set');
+
+        $data = $content->to('noPassword');
+
+        $this->assert(!isset($data['password']), 'The password is still set');
     }
 
     public function validation()
