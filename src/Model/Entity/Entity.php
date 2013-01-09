@@ -241,8 +241,6 @@ class Entity implements AccessibleInterface, AssertableInterface
 
     public function from($data, $filterToUse = null)
     {
-        $data = $this->makeArrayFromAnything($data);
-
         foreach ($this->getImportFilters()->offsetGet($filterToUse) as $filter) {
             $data = $filter($data);
         }
@@ -252,6 +250,8 @@ class Entity implements AccessibleInterface, AssertableInterface
             $data = $this->makeArrayFromAnything($data);
             $data = $this->mappers[$filterToUse]->map($data);
         }
+
+        $data = $this->makeArrayFromAnything($data);
 
         foreach ($data as $name => $value) {
             if (isset($this->vos[$name])) {
