@@ -186,50 +186,66 @@ Represents an array of value objects. For example, you may want an array of date
         'timeozne' => 'Australia/Sydney'
     ]));
 
-### Mappers
+Filters
+=======
 
-Mappers are used to translate information going into or out of your entities much like DTO's. For example, your content entity may have many fields, but your fields are sub-objects of your content entity. When you go to store this information, you need to somehow format the information so that it can be easily inserted into a database.
+Filters are simple classes which can be assigned to other classes or methods to intercept data before it is accessed by the filters assignment. Filters provide a way of running pre-defined code to translate data or perform other tasks, with routines shared by multiple classes or methods.
 
-    <?php
-    
-    namespace Model\Mapper\Content;
-    use DateTime;
-    
-    class ToDb extends Mapper
-    {
-        public $move = [
-            'id'          => 'content.id',
-            'title'       => 'content.title',
-            'description' => 'content.description',
-            'created'     => 'content.created',
-            'updated'     => 'content.updated',
-            'id'          => 'fields.$.id'
-        ];
-        
-        public $filters = [
-            'content.created' => 'filterDate',
-            'content.updated' => 'filterDate'
-        ];
-        
-        public function filterDate($date)
-        {
-            return date('Y-m-d H:i:s', strtotime($date));
-        }
-    }
+Filters are used to intercept data during import or export (when an entity's to() or from() methods are called). filters are primarily used for translating data from one format to another. Translation is usually needed when working with legacy entity data.
 
-Mappers can be applied to an entity in the `init()` method or by using annotations applied at the class doc comment level.
+A filter's *__invoke()* method signature looks like this:
 
-    $this->setMapper('toDb', new Model\Mapper\ToDb);
+        public function __invoke(array $data)
 
-or
+All defined filters are located under app/main/src/Model/Filter
 
-    /**
-     * @mapper toDb Model\Mapper\ToDb
-     */
-    class MyEntity extends Model\Entity\Entity
-    {
 
-    }
+Filter Usage
+============
+
+Defining a filter
+-----------------
+
+Filters are defined by a simple class implementing the *__invoke()* magic method. The name of the class should match the data source or destination i.e. *db* for database. The location of the filter should be specific to the direction of the data the filter is processing, either *to* or *from*.
+
+    e.g. Your file path for a database filter for translating database data to entity data may look something like this:
+     app/main/src/Filter/From/Billing/CodeGroup/Db.php
+
+The invoke method on the filter should accept one argument, an array, and return one argument, also an array. The returned array is the filtered data.
+
+Using a filter
+--------------
+
+To use a filter with an entity, you may attach it to a class or method by using the docTag argument *@filter*. The pattern to use will match the following:
+
+    @filter from <filter type i.e. db> using <class name i.e. Model\Filter\From\Billing\CodeGroup\Db>
+
+e.g.
+        /**
+         * Represents a billing item code.
+         *
+         * @filter from db using Model\Filter\From\Billing\CodeGroup\Db
+         */
+        class CodeGroup extends Entity
+        ...
+
+Using a filter when instantiating an entity should look something like this:
+
+        $found = ServiceContainer::main()->db->find
+            ->in('billing.code_groups')
+            ->where('icg_uid', $id)
+            ->one();
+
+        $entity = new Entity\Billing\CodeGroup($found, 'db');
+
+Notice the second argument in CodeGroup($found, 'db') this argument needs to match the *filter type* in the docTag. e.g. @filter from <filter type>
+
+
+Gotcha! Not all error situations cause errors
+---------------------------------------------
+
+In some situations if a filter is not found, an error will not be thrown. If you suspect that a filter is not being applied, you may need to insert some debug in to the the filter's *__invoke()* method to see if the method is being called. If the invoke method is not being called, then it's possible that either your _$entity = new Entity\Billing\CodeGroup($found, **'db'**);_ filter  argument name is incorrect or your _@filter from **db** using Model\Filter\From\Billing\CodeGroup\Db_ argument is incorrect.
+
 
 ### Validators
 
@@ -539,3 +555,14 @@ If you are running CRUD operations on large data sets, it may be a sound idea to
 ### Dealing with Less Data
 
 In a lot of cases, we are just doing it wrong. We don't need to display 1000 items to the user all at once or update 1000 records while they wait. A lot of times the programmer is the problem, not the tool.
+
+License
+-------
+
+Copyright (c) 2005-2013 Trey Shugart
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
