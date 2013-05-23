@@ -33,6 +33,13 @@ class ContentEntity extends Entity
      */
     public $comments;
 
+    /**
+     * @vo Model\Vo\HasMany 'Provider\ReferenceEntity'
+     *
+     * @autoload joinReferences
+     */
+    public $references;
+
     public static $validatedUsingClass = false;
 
     public static $validatedUsingMethod = false;
@@ -45,5 +52,9 @@ class ContentEntity extends Entity
     public function validateNameExists($name)
     {
         return $name ?: false;
+    }
+
+    protected function joinReferences() {
+        return ReferenceRepository::getByContentId($this->id);
     }
 }

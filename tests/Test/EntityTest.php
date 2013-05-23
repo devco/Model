@@ -92,4 +92,15 @@ class EntityTest extends UnitAbstract
         $this->assert(ContentEntity::$validatedUsingClass, 'The class validator was not invoked.');
         $this->assert(ContentEntity::$validatedUsingMethod, 'The method validator was not invoked.');
     }
+
+    public function autoloading()
+    {
+        $content = new ContentEntity;
+
+        $this->assert(count($content->references) === 2, 'Expected a set of 2 ReferenceEntities to be autoloaded');
+
+        $content = new ContentEntity(['references' => []]);
+
+        $this->assert(count($content->references) === 0, 'Expected an empty set of ReferenceEntities to be returned');
+    }
 }

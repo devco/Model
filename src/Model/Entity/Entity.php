@@ -61,6 +61,10 @@ class Entity implements AccessibleInterface, AssertableInterface
     {
         if (isset($this->vos[$name])) {
             $this->data[$name] = $this->vos[$name]->translate($value);
+
+            if (isset($this->autoloaders[$name])) {
+                $this->autoloaded[$name] = true;
+            }
         }
     }
 
@@ -207,6 +211,11 @@ class Entity implements AccessibleInterface, AssertableInterface
         return isset($this->autoloaders[$name]);
     }
 
+    public function isAutoloaded($name)
+    {
+        return isset($this->autoloaded[$name]);
+    }
+
     public function removeAutoloader($name)
     {
         if (isset($this->autoloaders[$name])) {
@@ -234,7 +243,7 @@ class Entity implements AccessibleInterface, AssertableInterface
     public function autoloadAll()
     {
         foreach ($this->vos as $name => $vo) {
-            if ($this->hasAutoloader($name)) {
+            if ($this->hasAutoloader($name) && !$this->isAutoloaded($name)) {
                 $this->autoload($name);
             }
         }
@@ -262,6 +271,10 @@ class Entity implements AccessibleInterface, AssertableInterface
         foreach ($data as $name => $value) {
             if (isset($this->vos[$name])) {
                 $this->data[$name] = $this->vos[$name]->translate($this->vos[$name]->from($value, $filterToUse));
+            }
+
+            if (isset($this->autoloaders[$name])) {
+                $this->autoloaded[$name] = true;
             }
         }
 
