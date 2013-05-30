@@ -8,6 +8,7 @@ use Provider\CommentEntity;
 use Provider\ContentEntity;
 use Provider\MongoEntity;
 use Provider\PasswordEntity;
+use Provider\ReferenceEntity;
 use Provider\UserEntity;
 use Testes\Test\UnitAbstract;
 
@@ -21,6 +22,18 @@ class EntityTest extends UnitAbstract
         ]);
         
         $this->assert($entity->id && $entity->name, 'The id or name was not set.');
+    }
+
+    public function defaultValues()
+    {
+        $entity = new ReferenceEntity;
+
+        $this->assert($entity->link === 'http://google.com', 'The default value for this Vo was not set');
+
+        // Specialty case: subsequent instances of an entity were not getting set with the default values.
+        $entity = new ReferenceEntity;
+
+        $this->assert($entity->link === 'http://google.com', 'The default value for this Vo was not set');
     }
 
     public function relationships()

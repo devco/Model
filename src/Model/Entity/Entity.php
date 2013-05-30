@@ -501,6 +501,10 @@ class Entity implements AccessibleInterface, AssertableInterface
 
         foreach ($this->vos as $name => $vo) {
             $this->data[$name] = $vo->init();
+
+            if (isset(self::$cache[$cacheKey]['initialValues'][$name])) {
+                $this->__set($name, self::$cache[$cacheKey]['initialValues'][$name]);
+            }
         }
     }
 
@@ -510,6 +514,12 @@ class Entity implements AccessibleInterface, AssertableInterface
 
         foreach (self::$cacheProperties as $name) {
             self::$cache[$cacheKey][$name] = $this->$name;
+        }
+
+        foreach ($this->data as $name => $vo) {
+            if ($this->$name) {
+                self::$cache[$cacheKey]['initialValues'][$name] = $this->$name;
+            }
         }
     }
 

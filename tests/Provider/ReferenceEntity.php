@@ -23,5 +23,5 @@ class ReferenceEntity extends Entity
     /**
      * @vo Model\Vo\String
      */
-    public $link;
+    public $link = 'http://google.com';
 }
