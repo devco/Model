@@ -52,7 +52,7 @@ class Entity implements AccessibleInterface, AssertableInterface
 
     public function __construct($data = [], $filterToUse = null)
     {
-        $this->configure();
+        $this->instantiate();
         $this->init();
         $this->from($data, $filterToUse);
     }
@@ -90,6 +90,11 @@ class Entity implements AccessibleInterface, AssertableInterface
         if (isset($this->data[$name])) {
             unset($this->data[$name]);
         }
+    }
+
+    public function configure()
+    {
+
     }
 
     public function init()
@@ -457,12 +462,13 @@ class Entity implements AccessibleInterface, AssertableInterface
         return [];
     }
 
-    private function configure()
+    private function instantiate()
     {
         if ($this->hasCache()) {
             $this->applyCache();
         } else {
             $this->configureUsingAnnotations();
+            $this->configure();
             $this->generateCache();
         }
 
