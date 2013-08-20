@@ -54,7 +54,6 @@ abstract class RepositoryAbstract
     public function callArgs($name, array $args)
     {
         $this->throwIfMethodNotExists($name);
-        $this->throwIfMethodNotProtected($name);
 
         if ($this->hasCache($name, $args)) {
             return $this->getCache($name, $args);
@@ -274,19 +273,6 @@ abstract class RepositoryAbstract
                 $origin['function'],
                 $origin['file'],
                 $origin['line']
-            ));
-        }
-    }
-
-    private function throwIfMethodNotProtected($method)
-    {
-        $reflector = new ReflectionMethod($this, $method);
-
-        if (!$reflector->isProtected()) {
-            throw new LogicException(sprintf(
-                'You must define "%s::%s()" as protected.',
-                get_class($this),
-                $method
             ));
         }
     }
