@@ -10,7 +10,8 @@ class Date extends VoAbstract
 
     public static $defaultConfig = [
         'format'   => DATE_RFC822,
-        'timezone' => null
+        'timezone' => null,
+        'allowNull' => false,
     ];
 
     public function __construct(array $config = [])
@@ -25,6 +26,10 @@ class Date extends VoAbstract
 
     public function translate($value)
     {
+        if (is_null($value) && $this->config['allowNull']) {
+            return $value;
+        }
+
         $datetime = $this->datetime();
 
         if ($value instanceof DateTime) {
