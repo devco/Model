@@ -50,7 +50,7 @@ class DateTest extends UnitAbstract
         $dateNow = new \DateTime();
         $dateOverTolerance = clone $dateNow;
 
-        $dateOverTolerance->modify('+' . self::SECONDS_TOLERANCE + 1 . ' seconds');
+        $dateOverTolerance->modify('+' . (self::SECONDS_TOLERANCE + 1) . ' seconds');
 
         // Determine how many seconds we need to be over tolerance
         $secondsDifference = $dateNow->diff($dateOverTolerance)->format('%s');
@@ -85,6 +85,20 @@ class DateTest extends UnitAbstract
             $translateResult === null,
             sprintf('Unexpected return value, expected null got %s', gettype($translateResult))
         );
+    }
+
+    public function initNullDate()
+    {
+        $date = $this->generateDate(null, null, true);
+
+        $this->assert($date->init() === null, 'Date is not null, expected null');
+    }
+
+    public function initNotNullDate()
+    {
+        $date = $this->generateDate(null, null, false);
+
+        $this->assert($date->init() !== null, 'Date is null, expected a date string');
     }
 
     public function tearDown()

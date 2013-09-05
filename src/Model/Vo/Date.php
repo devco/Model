@@ -21,7 +21,7 @@ class Date extends VoAbstract
 
     public function init()
     {
-        return $this->datetime()->format($this->config['format']);
+        return $this->config['allowNull'] ? null : $this->datetime()->format($this->config['format']);
     }
 
     public function translate($value)
