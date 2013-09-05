@@ -1,29 +1,39 @@
 <?php
 
 namespace Model\Vo;
-use InvalidArgumentException;
 use ReflectionClass;
-use RuntimeException;
+use Model\Entity;
 
 class VoSet extends VoAbstract
 {
+    private $args;
+
     private $class;
 
     public function __construct($class, array $args = [])
     {
-        $this->class = (new ReflectionClass($class))->newInstanceArgs($args);
+        $this->args  = $args;
+        $this->class = $class;
+    }
+
+    public function init()
+    {
+        return new Entity\VoSet($this->class, $this->args);
     }
 
     public function translate($value)
     {
-        $arr = [];
+        return new Entity\VoSet($this->class, $this->args, $value);
+    }
 
-        if (is_array($value) || is_object($value)) {
-            foreach ($value as $k => $v) {
-                $arr[$k] = $this->class->translate($v);
-            }
-        }
+    public function from($value, $filter = null)
+    {
 
-        return $arr;
+        return (new Entity\VoSet($this->class, $this->args))->from($value, $filter);
+    }
+
+    public function to($value, $filter = null)
+    {
+        return $value->to($filter);
     }
 }

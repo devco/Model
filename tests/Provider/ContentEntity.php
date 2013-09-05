@@ -40,6 +40,11 @@ class ContentEntity extends Entity
      */
     public $references;
 
+    /**
+     * @vo Model\Vo\VoSet 'Model\Vo\String'
+     */
+    public $tags;
+
     public static $validatedUsingClass = false;
 
     public static $validatedUsingMethod = false;
