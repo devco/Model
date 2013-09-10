@@ -6,18 +6,11 @@ use DateTimeZone;
 
 class Date extends VoAbstract
 {
-    public $config = [];
-
-    public static $defaultConfig = [
+    protected static $defaultConfig = [
         'format'   => DATE_RFC822,
         'timezone' => null,
         'allowNull' => false,
     ];
-
-    public function __construct(array $config = [])
-    {
-        $this->config = array_merge(self::$defaultConfig, $config);
-    }
 
     public function init()
     {

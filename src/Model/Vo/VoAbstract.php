@@ -11,6 +11,17 @@ abstract class VoAbstract implements VoInterface
     
     use Validatable;
 
+    protected $config = [];
+
+    protected static $defaultConfig = [
+        'allowNull' => false
+    ];
+
+    function __construct(array $config = [])
+    {
+        $this->config = array_merge(self::$defaultConfig, $config);
+    }
+
     public function init()
     {
         

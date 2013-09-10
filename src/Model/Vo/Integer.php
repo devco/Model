@@ -6,11 +6,11 @@ class Integer extends VoAbstract
 {
     public function init()
     {
-        return 0;
+        return $this->config['allowNull'] ? null : 0;
     }
 
     public function translate($value)
     {
-        return (int) $value;
+        return is_null($value) && $this->config['allowNull'] ? null : (int) $value;
     }
 }
