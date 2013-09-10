@@ -19,7 +19,7 @@ abstract class VoAbstract implements VoInterface
 
     function __construct(array $config = [])
     {
-        $this->config = array_merge(self::$defaultConfig, $config);
+        $this->config = array_merge(static::$defaultConfig, $config);
     }
 
     public function init()
