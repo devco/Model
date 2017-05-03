@@ -286,6 +286,25 @@ class Entity implements AccessibleInterface, AssertableInterface
         return $this;
     }
 
+    public function resetAutoLoaded()
+    {
+        foreach ($this->vos as $name => $vo) {
+            if ($this->hasAutoloader($name)) {
+                unset($this->autoloaded[$name]);
+            }
+
+            $voClass = get_class($vo);
+
+            if ($voClass == 'Model\Vo\HasOne') {
+                $instance = $this->__get($name);
+
+                if ($instance instanceof Entity) {
+                    $instance->resetAutoLoaded();
+                }
+            }
+        }
+    }
+
     public function to($filterToUse = null)
     {
         $data = [];

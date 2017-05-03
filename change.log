@@ -1,0 +1,15 @@
+Model change log.
+
+* 2015-11-25 *
+
+Sub entities auto loaders would not fire as they are set to loaded during construction. This is the desired affect when instantiating entities, but sometimes we need to run auto loaders.
+
+Example:
+
+$set = Repository::getAll() -> Set of LogEntries each of which contain a HasOne ContentEntity that has auto loaders.
+
+Run $set->to() will not auto load anything on ContentEntity.
+
+- Added Model\Entity\Entity::resetAutoloaded()
+
+

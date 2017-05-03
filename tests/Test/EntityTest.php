@@ -6,6 +6,7 @@ use Model\Entity\Set;
 use Model\Validator\ValidatorException;
 use Provider\CommentEntity;
 use Provider\ContentEntity;
+use Provider\LogRepository;
 use Provider\MongoEntity;
 use Provider\PasswordEntity;
 use Provider\ReferenceEntity;
@@ -153,5 +154,18 @@ class EntityTest extends UnitAbstract
         $this->assert($data[0]->name === 'Test Content');
         $this->assert($data[0]->user->isLastAdministrator === false);
         $this->assert($data[0]->comments->count() >= 100 && $data[0]->comments->count() <= 200);
+    }
+
+    public function autoLoadingSubEntities()
+    {
+        $set = LogRepository::getAll();
+
+        $set->walk(function($entity) {
+            $entity->resetAutoloaded();
+        });
+
+        $data = $set->first()->to();
+
+        $this->assert(sizeof($data['content']['references']) == 2, 'Auto loader for sub Entity did not fire');
     }
 }
