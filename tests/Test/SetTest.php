@@ -130,4 +130,18 @@ class SetTest extends UnitAbstract
 
         $this->assert($set->count() == 2, 'ufilter did not filter the set');
     }
+
+  public function unique()
+  {
+    $set = new Set('Provider\ContentEntity', [
+      ['id' => 1, 'name' => 'Orange'],
+      ['id' => 2, 'name' => 'Apple'],
+      ['id' => 3, 'name' => 'Banana'],
+      ['id' => 4, 'name' => 'Banana'],
+    ]);
+
+    $set->unique();
+
+    $this->assert($set->count() == 3, 'unique did not filter the set correctly');
+  }
 }

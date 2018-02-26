@@ -5,6 +5,7 @@ use Model\Entity\Entity;
 
 /**
  * @mapper testMapper Provider\ContentMapper
+ * @filter to toString using Provider\Filter\ContentEntityFilterToString
  * 
  * @validator Provider\ContentValidator Test error message.
  * @validator contentValidator          Test error message.
@@ -61,5 +62,10 @@ class ContentEntity extends Entity
 
     protected function joinReferences() {
         return ReferenceRepository::getByContentId($this->id);
+    }
+
+    public function __toString()
+    {
+      return implode($this->to('toString'));
     }
 }
