@@ -428,4 +428,9 @@ class Set implements AccessibleInterface, ValidatableInterface
 
         $this->data = array_values(array_filter($this->data, $callback));
     }
+
+    public function unique()
+    {
+      $this->data = array_values(array_unique($this->data));
+    }
 }
